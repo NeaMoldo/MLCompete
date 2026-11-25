@@ -1,1 +1,1 @@
-Daca intelegi rezolvarile mele, meriti un premiu!
+da fuc is dis shit 

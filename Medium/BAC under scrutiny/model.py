@@ -1,7 +1,6 @@
 #imports
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.ensemble import RandomForestRegressor
+
 import warnings
 
 warnings.filterwarnings('ignore')
@@ -16,36 +15,43 @@ print(f'{train.isnull().sum()}\n')
 #test
 test = pd.read_csv('./test.csv')
 
-#TASK1
-unirea = test[test['liceu'] == 'COLEGIUL NATIONAL "UNIREA" FOCSANI']
-unirea = unirea[(unirea['materie'] != 'LIMBA ROMANA') and (unirea['materie'] != 'GENERAL')]
-answer = unirea['preferinta_materie'].max()
+print(f'{test.isnull().sum()}\n')
+
+#Task 1
+df = test[(test['liceu'] == 'COLEGIUL NATIONAL "UNIREA" FOCSANI') & (test['an'] == 2023)
+          & (test['materie'] != 'LIMBA ROMANA') & (test['materie'] != 'GENERAL')]
+
+answer = df.sort_values(by='preferinta_materie',ascending=False).iloc[0]['materie']
 
 task_1 = pd.DataFrame({
-    'id':[1],
     'subtaskID':[1],
-    'answer':[answer]
+    'datapoinID':[1],
+    'answer':answer
 })
 
+#Task 2
+df = test[(test['liceu'] == 'COLEGIUL NATIONAL "UNIREA" FOCSANI')
+          & (test['materie'] == ' INFORMATICA MI C-C++')
+          & (test['an'] >= 2014)
+          & test['an'] <= 2022
+          ]
 
-#TASK2
-bac_info = unirea[unirea['materie'] == 'INFORMATICA MI C-C++']
-max_perc = unirea['preferinta_materie'].max()
-sample = unirea[unirea['preferinta_materie'] == max_perc]
-answer = sample['an']
+answer = df.sort_values(by='preferinta_materie',ascending=False).iloc[0]['an']
 
 task_2 = pd.DataFrame({
-    'id':[2],
     'subtaskID':[2],
-    'answer':[answer]
+    'datapointID':[2],
+    'answer':answer
 })
 
-#TASK3
-X_train = train.drop(labels=(['anomalie','medie','id']),axis=1)
+#Task 3
+X_train_raw = train.drop(columns=(['id','judet','medie']))
+X_train_raw = X_train_raw[X_train_raw['anomalie']==0]
+X_train_raw.drop(columns=('anomalie'),inplace=True)
+
 y_train = train['medie']
 
-oneHot = OneHotEncoder()
-features = ['materie','liceu','judet']
-X_train_encoded = oneHot.fit_transform(X_train[features])
+X_test_raw = test.drop(columns=(['id','judet']))
 
-X_test_encoded = oneHot.transform(test[features])
+X_train_raw = X_train_raw.sort_values(by=['liceu','materie','an'])
+
