@@ -5,3 +5,4 @@ images/
 checkpoints/
 lightning_logs/
 output_dataset/
+catboost_info/
