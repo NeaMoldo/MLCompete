@@ -1,5 +1,7 @@
 .venv/
 *.csv
+*.yaml
 images/
 checkpoints/
-lightning_los/
+lightning_logs/
+output_dataset/
